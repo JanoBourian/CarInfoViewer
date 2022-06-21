@@ -1,2 +1,8 @@
 carinfovenv/
-**/__pychache__/
+config.py
+*.db
+__pycache__/
+**/__pycache__/
+**/__pycache__
+__pycache__/
+__pycache__
