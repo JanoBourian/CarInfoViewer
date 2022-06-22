@@ -14,24 +14,24 @@ class Car(Base):
     sold_id = Column(Integer, ForeignKey("solds.id"))
     
     # relationships
+    sold = relationship("Sold", back_populates="cars")
     make = relationship("Make", back_populates="cars")
     engine = relationship("Engine", back_populates="cars")
-    sold = relationship("Sold", back_populates="cars")
     
 class Sold(Base):
     __tablename__ = "solds"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
-    cars = relationship("Car", back_populates="solds")
+    cars = relationship("Car", back_populates="sold")
 
 class Make(Base):
     __tablename__ = "makes"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
-    cars = relationship("Car", back_populates="makes")
+    cars = relationship("Car", back_populates="make")
 
 class Engine(Base):
     __tablename__ = "engines"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
-    cars = relationship("Car", back_populates="engines")
+    cars = relationship("Car", back_populates="engine")

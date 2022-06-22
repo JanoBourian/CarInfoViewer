@@ -55,27 +55,28 @@ class Car(Base):
     sold_id = Column(Integer, ForeignKey("solds.id"))
     
     # relationships
+    sold = relationship("Sold", back_populates="cars")
     make = relationship("Make", back_populates="cars")
     engine = relationship("Engine", back_populates="cars")
-    sold = relationship("Sold", back_populates="cars")
     
 class Sold(Base):
     __tablename__ = "solds"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
-    cars = relationship("Car", back_populates="solds")
+    cars = relationship("Car", back_populates="sold")
 
 class Make(Base):
     __tablename__ = "makes"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
-    cars = relationship("Car", back_populates="makes")
+    cars = relationship("Car", back_populates="make")
 
 class Engine(Base):
     __tablename__ = "engines"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, unique=True)
-    cars = relationship("Car", back_populates="engines")
+    cars = relationship("Car", back_populates="engine")
+
 ```
 
 ## Main file modifications
@@ -97,6 +98,65 @@ Base.metadata.create_all(engine)
 ```
 
 ## Pydantic relationship
+
+```
+from pydantic import BaseModel, validator, Field
+from typing import Optional, List
+
+
+## Engine
+class Engine(BaseModel):
+    name: str
+
+class DisplayEngine(BaseModel):
+    name: str
+    
+    class Config:
+        orm_mode = True
+
+## Make
+class Make(BaseModel):
+    name: str
+
+class DisplayMake(BaseModel):
+    name: str
+    
+    class Config:
+        orm_mode = True
+
+## Sold
+class Sold(BaseModel):
+    name: str
+
+class DisplaySold(BaseModel):
+    name: str
+    
+    class Config:
+        orm_mode = True
+
+## Car
+class Car(BaseModel):
+    model: str
+    year: int = Field(..., ge = 1970, lt = 2022)
+    price: float
+    autonomus: bool
+    make_id: int
+    engine_id: int
+    sold_id: int
+
+class DisplayCar(BaseModel):
+    model: str
+    year: int
+    price: float
+    autonomus: bool
+    make: DisplayMake
+    engine: DisplayEngine
+    sold: DisplaySold
+    
+    class Config:
+        orm_mode = True
+    
+```
 
 # Instalation
 
